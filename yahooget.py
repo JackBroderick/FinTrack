@@ -1,3 +1,4 @@
+import os
 from yahoo_fin.stock_info import get_data, tickers_sp500, tickers_nasdaq, tickers_other, get_quote_table, get_income_statement
 import yfinance as yf
 import openpyxl
@@ -67,15 +68,52 @@ def cash_flow_statement_with_yfinance(ticker):
     except Exception as e:
         print(f"Error fetching cash flow statement for {ticker} with yfinance: {e}")
 
+def adjust_column_width(sheet):
+    """
+    Adjusts the column width of all columns in the sheet based on the longest string in each column.
+    For financial statements, it checks both columns individually.
+    """
+    for column in sheet.columns:
+        max_length = 0
+        column_name = column[0].column_letter  # Get the column name (e.g. 'A', 'B', 'C', ...)
+        
+        for cell in column:
+            try:
+                # Get the length of the string representation of each cell and keep track of the max length
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        
+        # Adjust the column width, add extra space for padding
+        adjusted_width = (max_length + 2)
+        sheet.column_dimensions[column_name].width = adjusted_width
+
+
 def write_to_workbook(ticker, hist_data, income_statement, balance_sheet, cash_flow):
     """
-    Writes the fetched data to a new Excel workbook.
+    Writes the fetched data to a new Excel workbook with auto-adjusted column widths.
     """
+    file_path = f"sheets/{ticker}_stock_data.xlsx"
+    
+    # Check if the file already exists
+    if os.path.exists(file_path):
+        overwrite = input(f"The file {ticker}_stock_data.xlsx already exists. Would you like to overwrite it? (Y/N): ").strip()
+        if overwrite.upper() != 'Y':
+            print(f"Skipping the overwrite. Data for {ticker} will not be saved.")
+            return
+
+    # Create a new workbook if not exists
+    wb = openpyxl.Workbook()
+
     # Write historical data
     sheet = wb.create_sheet(title=f"{ticker} - Historical Data")
     sheet.append(["Date", "Open", "High", "Low", "Close", "Volume"])
     for index, row in hist_data.iterrows():
         sheet.append([index.date(), row["open"], row["high"], row["low"], row["close"], row["volume"]])
+
+    # Adjust column widths for historical data sheet
+    adjust_column_width(sheet)
 
     # Write income statement
     sheet = wb.create_sheet(title=f"{ticker} - Income Statement")
@@ -89,6 +127,9 @@ def write_to_workbook(ticker, hist_data, income_statement, balance_sheet, cash_f
                 value = None  # Replace NaN with None
             sheet.append([key, value])
 
+    # Adjust column widths for income statement sheet
+    adjust_column_width(sheet)
+
     # Write balance sheet
     sheet = wb.create_sheet(title=f"{ticker} - Balance Sheet")
     sheet.append(["Metric", "Value"])
@@ -100,6 +141,9 @@ def write_to_workbook(ticker, hist_data, income_statement, balance_sheet, cash_f
             elif isinstance(value, float) and (value != value):  # Check for NaN
                 value = None  # Replace NaN with None
             sheet.append([key, value])
+
+    # Adjust column widths for balance sheet sheet
+    adjust_column_width(sheet)
 
     # Write cash flow statement
     sheet = wb.create_sheet(title=f"{ticker} - Cash Flow Statement")
@@ -113,9 +157,13 @@ def write_to_workbook(ticker, hist_data, income_statement, balance_sheet, cash_f
                 value = None  # Replace NaN with None
             sheet.append([key, value])
 
+    # Adjust column widths for cash flow statement sheet
+    adjust_column_width(sheet)
+
     # Save the workbook
-    wb.save(f"sheets/{ticker}_stock_data.xlsx")
-    print(f"\nData for {ticker} has been written to {ticker}_stock_data.xlsx")
+    wb.save(file_path)
+    print(f"\nData for {ticker} has been written to {file_path}")
+
 
 
 def main():
