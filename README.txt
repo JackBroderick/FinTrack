@@ -1,6 +1,6 @@
-FINTRACK 1.3.1 - a yfinance excel workbook constructor
+FINTRACK 1.3.1 - yfinance excel workbook constructor
 
-TO USE
+***TO USE***
 
 1) Download and unzip
 2) python -m venv .venv 
@@ -8,9 +8,10 @@ TO USE
 4) pip install -r requirements.txt 
 5) python main.py
 
-ACCEPTS USER INPUT AS A STOCK TICKER RETURNS sheets\(ticker)_stock_data.xlsx 
+WILL ACCEPT A STOCK TICKER RETURN sheets\(ticker)_stock_data.xlsx 
 
 Workbook sheets: [COMPANY INFO] [25 YEAR PRICE DATA] [CASH FLOW STATEMENT] [INCOME STATEMENT] [BALANCE SHEET]
+
 
 FinTrack/
 ├── sheets                #Folder where new sheets are saved
