@@ -1,3 +1,5 @@
+#Yahooget.py pulls data from yfinance to be sent to writetoworkbook.py for formatting and writing to file
+
 import os
 from yahoo_fin.stock_info import get_data, tickers_sp500, tickers_nasdaq, tickers_other, get_quote_table, get_income_statement
 import yfinance as yf
@@ -94,33 +96,33 @@ def get_stock_info(ticker):
 
         # Select only the relevant attributes to return
         selected_info = {
-            "longName": info.get("longName"),
-            "symbol": info.get("symbol"),
-            "sector": info.get("sector"),
-            "industry": info.get("industry"),
-            "marketCap": info.get("marketCap"),
-            "peRatio": info.get("peRatio"),
-            "beta": info.get("beta"),
-            "previousClose": info.get("previousClose"),
-            "regularMarketPrice": info.get("regularMarketPrice"),
-            "regularMarketChange": info.get("regularMarketChange"),
-            "regularMarketDayHigh": info.get("regularMarketDayHigh"),
-            "regularMarketDayLow": info.get("regularMarketDayLow"),
-            "fiftyTwoWeekHigh": info.get("fiftyTwoWeekHigh"),
-            "fiftyTwoWeekLow": info.get("fiftyTwoWeekLow"),
-            "dividendRate": info.get("dividendRate"),
-            "dividendYield": info.get("dividendYield"),
-            "employees": info.get("employees"),
-            "country": info.get("country"),
-            "address1": info.get("address1"),
-            "city": info.get("city"),
-            "state": info.get("state"),
-            "zip": info.get("zip"),
-            "phone": info.get("phone"),
-            "website": info.get("website"),
-            "exchange": info.get("exchange"),
-            "currency": info.get("currency"),
+            "Company Name": info.get("longName"),
+            "Symbol": '$' + info.get("symbol"),
+            "Sector": info.get("sector"),
+            "Industry": info.get("industry"),
+            "Employees": info.get("fullTimeEmployees"),
+            "Country": info.get("country"),
+            "Address": info.get("address1"),
+            "City": info.get("city"),
+            "State": info.get("state"),
+            "Zip": info.get("zip"),
+            "Phone": info.get("phone"),
+            "Website": info.get("website"),
+            "Exchange": info.get("exchange"),
+            "Market Cap": '${:,.2f}'.format(info.get("marketCap")),
+            "P/E Ratio": '{:.2f}'.format(info.get("forwardPE")),
+            "Beta": info.get("beta"),
+            "PreviousClose": '${:,.2f}'.format(info.get("previousClose")),
+            "Regular Market Day High": '${:,.2f}'.format(info.get("regularMarketDayHigh")),
+            "Regular Market Day Low": '${:,.2f}'.format(info.get("regularMarketDayLow")),
+            "Fifty-Two Week High": '${:,.2f}'.format(info.get("fiftyTwoWeekHigh")),
+            "Fifty-Two Week Low": '${:,.2f}'.format(info.get("fiftyTwoWeekLow")),
+            "Dividend Rate": info.get("dividendRate"),
+            "Dividend Yield": info.get("dividendYield"),
+
         }
+        print(info.keys())   # prints all keys to swap out as relevant
+
 
         # Return the selected information
         return selected_info

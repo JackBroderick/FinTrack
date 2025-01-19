@@ -1,3 +1,6 @@
+#writetoworkbook.py recieves stock data from yahooget.py formats and writes to a new .xlsx file
+
+
 import os
 import openpyxl
 from openpyxl.styles import NamedStyle, Font
@@ -47,7 +50,7 @@ def write_to_workbook(ticker, hist_data, income_statement, balance_sheet, cash_f
     
     # Create and populate "Stock Info" sheet with the data fetched from get_stock_info
     sheet = wb.create_sheet(title=f"{ticker} - Stock Info")
-    sheet.append(["Metric", "Value"])
+    #sheet.append(["Metric", "Value"])
 
     # Write the stock information to the "Stock Info" sheet
     for key, value in stock_info.items():
@@ -62,7 +65,7 @@ def write_to_workbook(ticker, hist_data, income_statement, balance_sheet, cash_f
         sheet.append([index.date(), row["open"], row["high"], row["low"], row["close"], row["volume"]])
 
     # Apply dollar formatting to numerical columns only (Open, High, Low, Close, Volume)
-    for row in sheet.iter_rows(min_row=2, min_col=2, max_col=6):  # Starting from the second row
+    for row in sheet.iter_rows(min_row=2, min_col=2, max_col=5):  # Starting from the second row
         for cell in row:
             if isinstance(cell.value, (int, float)):  # Check if the cell contains a numeric value
                 cell.number_format = '"$"#,##0.00'  # Apply dollar format directly
@@ -99,10 +102,6 @@ def write_to_workbook(ticker, hist_data, income_statement, balance_sheet, cash_f
                 avg_change_cell.value = avg_change
                 avg_change_cell.number_format = "0.0%"  
                 
-                if avg_change > 0:
-                    avg_change_cell.font = Font(color="228B22")
-                elif avg_change < 0:
-                    avg_change_cell.font = Font(color="FF0000")
 
         adjust_column_width(sheet)
 
