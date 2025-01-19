@@ -5,7 +5,7 @@ TO USE
 1) Download and unzip
 2) python -m venv .venv 
 3) .venv\scripts\activate
-4) pip install -r requirements.txt  #to install dependencies
+4) pip install -r requirements.txt 
 5) python main.py
 
 ACCEPTS USER INPUT AS A STOCK TICKER RETURNS sheets\(ticker)_stock_data.xlsx 
