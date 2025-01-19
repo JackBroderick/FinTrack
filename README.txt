@@ -8,7 +8,7 @@ TO USE
 4) pip install -r requirements.txt  #to install dependencies
 5) python main.py
 
-ACCEPTS USER INPUT AS A STOCK TICKER RETURNS sheets\(ticker)_get_geta.xlsx 
+ACCEPTS USER INPUT AS A STOCK TICKER RETURNS sheets\(ticker)_stock_data.xlsx 
 
 Workbook sheets: [COMPANY INFO] [25 YEAR PRICE DATA] [CASH FLOW STATEMENT] [INCOME STATEMENT] [BALANCE SHEET]
 
