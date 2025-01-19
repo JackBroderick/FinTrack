@@ -2,7 +2,6 @@ import os
 from yahoo_fin.stock_info import get_data, tickers_sp500, tickers_nasdaq, tickers_other, get_quote_table, get_income_statement
 import yfinance as yf
 import time
-from writetoworkbook import write_to_workbook  # Import the write_to_workbook function
 
 def get_historical_data(ticker, start_date='1/1/2000', end_date=None):
     """
@@ -81,6 +80,54 @@ def cash_flow_statement_with_yfinance(ticker):
         return cashflow
     except Exception as e:
         print(f"Error fetching cash flow statement for {ticker} with yfinance: {e}")
+        
+def get_stock_info(ticker):
+    """
+    Fetches and returns selected stock information as a dictionary.
+    """
+    try:
+        # Create a Ticker object using the ticker symbol
+        stock = yf.Ticker(ticker)
+        
+        # Fetch all available information from the stock
+        info = stock.info
+
+        # Select only the relevant attributes to return
+        selected_info = {
+            "longName": info.get("longName"),
+            "symbol": info.get("symbol"),
+            "sector": info.get("sector"),
+            "industry": info.get("industry"),
+            "marketCap": info.get("marketCap"),
+            "peRatio": info.get("peRatio"),
+            "beta": info.get("beta"),
+            "previousClose": info.get("previousClose"),
+            "regularMarketPrice": info.get("regularMarketPrice"),
+            "regularMarketChange": info.get("regularMarketChange"),
+            "regularMarketDayHigh": info.get("regularMarketDayHigh"),
+            "regularMarketDayLow": info.get("regularMarketDayLow"),
+            "fiftyTwoWeekHigh": info.get("fiftyTwoWeekHigh"),
+            "fiftyTwoWeekLow": info.get("fiftyTwoWeekLow"),
+            "dividendRate": info.get("dividendRate"),
+            "dividendYield": info.get("dividendYield"),
+            "employees": info.get("employees"),
+            "country": info.get("country"),
+            "address1": info.get("address1"),
+            "city": info.get("city"),
+            "state": info.get("state"),
+            "zip": info.get("zip"),
+            "phone": info.get("phone"),
+            "website": info.get("website"),
+            "exchange": info.get("exchange"),
+            "currency": info.get("currency"),
+        }
+
+        # Return the selected information
+        return selected_info
+
+    except Exception as e:
+        print(f"An error occurred while fetching data for {ticker}: {e}")
+        return None
 
 def main():
     pass
