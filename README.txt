@@ -1,4 +1,4 @@
-FINTRACK 1.3.1
+FINTRACK 1.3.1 a yfinance workbook constructor
 
 TO USE
 
@@ -7,7 +7,6 @@ TO USE
 3) .venv\scripts\activate
 4) pip install -r requirements.txt  #to install dependencies
 5) python main.py
-
 
 ACCEPTS USER INPUT AS A STOCK TICKER RETURNS sheets\(ticker)_get_geta.xlsx 
 
