@@ -1,4 +1,4 @@
-FINTRACK 1.0.1-beta
+FINTRACK 1.2.0
 
 USE pip install -r requirements.txt TO INSTALL DEPENDENCIES
 
