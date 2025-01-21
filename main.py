@@ -1,5 +1,6 @@
 from yahooget import get_historical_data, get_shares_outstanding, income_statement_with_yfinance, balance_sheet_with_yfinance, cash_flow_statement_with_yfinance
 from writetoworkbook import write_to_workbook
+import time
 
 def main():
     """
@@ -10,6 +11,7 @@ def main():
         entry = input("Enter a stock ticker to fetch data for: ")
 
         try:
+            start_time = time.perf_counter()
             print("\nFetching Outstanding shares...\n")
             hist_data = get_shares_outstanding(entry)
 
@@ -28,6 +30,9 @@ def main():
             # Fetch and display cash flow statement
             print("\nFetching cash flow statement...\n")
             cash_flow = cash_flow_statement_with_yfinance(entry)
+            end_time = time.perf_counter()
+            print("Completed in: ", (end_time-start_time), " seconds.")
+
 
             # Ask user if they want to write the data to a new workbook
             q_write = input(f"\nWould you like to write the data for {entry} to a new workbook? (Y/N): ").strip()
