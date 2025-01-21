@@ -1,114 +1,117 @@
-#Yahooget.py pulls data from yfinance to be sent to writetoworkbook.py for formatting and writing to file
+"""
+yahooget.py
 
-import os
-from yahoo_fin.stock_info import get_data, tickers_sp500, tickers_nasdaq, tickers_other, get_quote_table, get_income_statement
+This module fetches stock data from Yahoo Finance and related sources. It includes functions 
+to retrieve historical data, financial statements, and other stock information.
+"""
+
+from yahoo_fin.stock_info import get_data
 import yfinance as yf
 
-totalTime = 0
 
 def get_historical_data(ticker, start_date='1/1/2000', end_date=None):
     """
-    Fetches historical stock data for the given ticker and prints it.
+    Fetches historical stock data for the given ticker.
     """
-
     try:
-        # Fetch historical data
-        datamess = get_data(ticker, start_date=start_date, end_date=end_date)
+        data = get_data(ticker, start_date=start_date, end_date=end_date)
         print("\nFetching historical data...\n")
-        #print(datamess)
-
-        return datamess
+        return data
+    except ValueError as e:
+        print(f"ValueError fetching historical data for {ticker}: {e}")
+        return None
     except Exception as e:
         print(f"Error fetching historical data for {ticker}: {e}")
+        return None
+
 
 def get_shares_outstanding(ticker):
+    """
+    Fetches the number of shares outstanding for the given ticker.
+    """
     try:
-        # Fetch the ticker data
         stock = yf.Ticker(ticker)
-        # Get shares outstanding
         outstanding = stock.info.get("sharesOutstanding")
-        
-        if outstanding is None:
-            print(f"No shares data available for {ticker}.")
-        else:
-            print(f"\nShares outstanding for {ticker}: {outstanding}")
-        
         return outstanding
+    except KeyError as e:
+        print(f"KeyError fetching shares outstanding for {ticker}: {e}")
+        return None
     except Exception as e:
-        print(f"Error fetching shares outstanding for {ticker} with yfinance: {e}")
+        print(f"Error fetching shares outstanding for {ticker}: {e}")
+        return None
+
 
 def income_statement_with_yfinance(ticker):
     """
-    Fetches the income statement using the yfinance library and prints it.
+    Fetches the income statement using yfinance.
     """
-
     try:
         stock = yf.Ticker(ticker)
-        financials = stock.financials  # Income statement
-
+        financials = stock.financials
         if financials.empty:
             print(f"No income statement data available for {ticker}.")
-        else:
-            print(f"\nFetching income statement...\n")
-            #print(financials)
+            return None
+        print("\nFetching income statement...\n")
         return financials
-    
+    except KeyError as e:
+        print(f"KeyError fetching income statement for {ticker}: {e}")
+        return None
     except Exception as e:
-        print(f"Error fetching income statement for {ticker} with yfinance: {e}")
+        print(f"Error fetching income statement for {ticker}: {e}")
+        return None
+
 
 def balance_sheet_with_yfinance(ticker):
     """
-    Fetches the balance sheet using the yfinance library and prints it.
+    Fetches the balance sheet using yfinance.
     """
-
     try:
         stock = yf.Ticker(ticker)
-        balance_sheet = stock.balance_sheet  # Balance sheet
-
+        balance_sheet = stock.balance_sheet
         if balance_sheet.empty:
             print(f"No balance sheet data available for {ticker}.")
-        else:
-            print(f"\nFetching balance sheet...\n")
-            #print(balance_sheet)
+            return None
+        print("\nFetching balance sheet...\n")
         return balance_sheet
-    
+    except KeyError as e:
+        print(f"KeyError fetching balance sheet for {ticker}: {e}")
+        return None
     except Exception as e:
-        print(f"Error fetching balance sheet for {ticker} with yfinance: {e}")
+        print(f"Error fetching balance sheet for {ticker}: {e}")
+        return None
+
 
 def cash_flow_statement_with_yfinance(ticker):
     """
-    Fetches the cash flow statement using the yfinance library and prints it.
+    Fetches the cash flow statement using yfinance.
     """
-
     try:
         stock = yf.Ticker(ticker)
-        cashflow = stock.cashflow  # Cash flow statement
-        
+        cashflow = stock.cashflow
         if cashflow.empty:
             print(f"No cash flow statement data available for {ticker}.")
-        else:
-            print("\nFetching cash flow statement...\n")
-            #print(cashflow)
+            return None
+        print("\nFetching cash flow statement...\n")
         return cashflow
-    
+    except KeyError as e:
+        print(f"KeyError fetching cash flow statement for {ticker}: {e}")
+        return None
     except Exception as e:
-        print(f"Error fetching cash flow statement for {ticker} with yfinance: {e}")
-        
+        print(f"Error fetching cash flow statement for {ticker}: {e}")
+        return None
+
+
 def get_stock_info(ticker):
     """
     Fetches and returns selected stock information as a dictionary.
     """
-
     try:
-        # Create a Ticker object using the ticker symbol
         stock = yf.Ticker(ticker)
-        # Fetch all available information from the stock
         info = stock.info
 
-        # Select only the relevant attributes to see all use print(info.keys())
         selected_info = {
             "Company Name": info.get("longName"),
-            "Symbol": '$' + info.get("symbol"),
+            "Symbol": info.get("symbol"),
             "Sector": info.get("sector"),
             "Industry": info.get("industry"),
             "Employees": info.get("fullTimeEmployees"),
@@ -120,29 +123,31 @@ def get_stock_info(ticker):
             "Phone": info.get("phone"),
             "Website": info.get("website"),
             "Exchange": info.get("exchange"),
-            "Market Cap": '${:,.2f}'.format(info.get("marketCap")),
-            "P/E Ratio": '{:.2f}'.format(info.get("forwardPE")),
+            "Market Cap": info.get("marketCap"),
+            "Shares Outstanding": get_shares_outstanding(ticker),
+            "P/E Ratio": info.get("forwardPE"),
             "Beta": info.get("beta"),
-            "PreviousClose": '${:,.2f}'.format(info.get("previousClose")),
-            "Regular Market Day High": '${:,.2f}'.format(info.get("regularMarketDayHigh")),
-            "Regular Market Day Low": '${:,.2f}'.format(info.get("regularMarketDayLow")),
-            "Fifty-Two Week High": '${:,.2f}'.format(info.get("fiftyTwoWeekHigh")),
-            "Fifty-Two Week Low": '${:,.2f}'.format(info.get("fiftyTwoWeekLow")),
+            "Previous Close": info.get("previousClose"),
+            "Regular Market Day High": info.get("regularMarketDayHigh"),
+            "Regular Market Day Low": info.get("regularMarketDayLow"),
+            "Fifty-Two Week High": info.get("fiftyTwoWeekHigh"),
+            "Fifty-Two Week Low": info.get("fiftyTwoWeekLow"),
             "Dividend Rate": info.get("dividendRate"),
             "Dividend Yield": info.get("dividendYield"),
         }
-
-        # prints all keys to swap out as relevant
-        # Return the selected information
         return selected_info
-
+    except KeyError as e:
+        print(f"KeyError fetching stock info for {ticker}: {e}")
+        return None
     except Exception as e:
         print(f"An error occurred while fetching data for {ticker}: {e}")
         return None
 
+
 def main():
+    """Main entry point of the script."""
     pass
 
-if __name__ == '__main__':
-    main()
 
+if __name__ == "__main__":
+    main()
