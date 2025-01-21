@@ -14,8 +14,8 @@ def get_historical_data(ticker, start_date='1/1/2000', end_date=None):
     try:
         # Fetch historical data
         datamess = get_data(ticker, start_date=start_date, end_date=end_date)
-        print("\nHistorical Data:")
-        print(datamess)
+        print("\nFetching historical data...\n")
+        #print(datamess)
 
         return datamess
     except Exception as e:
@@ -49,8 +49,8 @@ def income_statement_with_yfinance(ticker):
         if financials.empty:
             print(f"No income statement data available for {ticker}.")
         else:
-            print(f"\nIncome Statement for {ticker}:")
-            print(financials)
+            print(f"\nFetching income statement...\n")
+            #print(financials)
         return financials
     
     except Exception as e:
@@ -68,8 +68,8 @@ def balance_sheet_with_yfinance(ticker):
         if balance_sheet.empty:
             print(f"No balance sheet data available for {ticker}.")
         else:
-            print(f"\nBalance Sheet for {ticker}:")
-            print(balance_sheet)
+            print(f"\nFetching balance sheet...\n")
+            #print(balance_sheet)
         return balance_sheet
     
     except Exception as e:
@@ -87,8 +87,8 @@ def cash_flow_statement_with_yfinance(ticker):
         if cashflow.empty:
             print(f"No cash flow statement data available for {ticker}.")
         else:
-            print(f"\nCash Flow Statement for {ticker}:")
-            print(cashflow)
+            print("\nFetching cash flow statement...\n")
+            #print(cashflow)
         return cashflow
     
     except Exception as e:
@@ -105,7 +105,7 @@ def get_stock_info(ticker):
         # Fetch all available information from the stock
         info = stock.info
 
-        # Select only the relevant attributes to return (see keys from ticker.info)
+        # Select only the relevant attributes to see all use print(info.keys())
         selected_info = {
             "Company Name": info.get("longName"),
             "Symbol": '$' + info.get("symbol"),
@@ -130,10 +130,9 @@ def get_stock_info(ticker):
             "Fifty-Two Week Low": '${:,.2f}'.format(info.get("fiftyTwoWeekLow")),
             "Dividend Rate": info.get("dividendRate"),
             "Dividend Yield": info.get("dividendYield"),
-
         }
 
-        print(info.keys())   # prints all keys to swap out as relevant
+        # prints all keys to swap out as relevant
         # Return the selected information
         return selected_info
 

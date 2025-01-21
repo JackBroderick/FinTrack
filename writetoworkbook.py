@@ -1,10 +1,11 @@
 #writetoworkbook.py recieves stock data from yahooget.py formats and writes to a new .xlsx file
 
-
 import os
 import openpyxl
 from openpyxl.styles import NamedStyle, Font
 from yahooget import get_stock_info  # Import get_stock_info from yahooget.py
+import datetime
+from pathlib import Path
 
 # Create dollar and percent styles
 def create_dollar_style():
@@ -30,8 +31,11 @@ def adjust_column_width(sheet):
 
 def write_to_workbook(ticker, hist_data, income_statement, balance_sheet, cash_flow):
     os.makedirs('sheets', exist_ok=True)
+    now = datetime.datetime.now()
+    formatnow = now.ctime()
     
-    file_path = f"sheets/{ticker}_stock_data.xlsx"
+    sheets_dir = f"sheets/{ticker}_stock_data.xlsx"
+    file_path = Path(sheets_dir) #Allows path to work on all systems
     
     if os.path.exists(file_path):
         overwrite = input(f"The file {ticker}_stock_data.xlsx already exists. Would you like to overwrite it? (Y/N): ").strip()
@@ -51,7 +55,7 @@ def write_to_workbook(ticker, hist_data, income_statement, balance_sheet, cash_f
     # Create and populate "Stock Info" sheet with the data fetched from get_stock_info
     sheet = wb.create_sheet(title=f"{ticker} - Stock Info")
     #sheet.append(["Metric", "Value"])
-
+    sheet.append(["Report created: ", formatnow])
     # Write the stock information to the "Stock Info" sheet
     for key, value in stock_info.items():
         sheet.append([key, value])
@@ -65,7 +69,7 @@ def write_to_workbook(ticker, hist_data, income_statement, balance_sheet, cash_f
         sheet.append([index.date(), row["open"], row["high"], row["low"], row["close"], row["volume"]])
 
     # Apply dollar formatting to numerical columns only (Open, High, Low, Close, Volume)
-    for row in sheet.iter_rows(min_row=2, min_col=2, max_col=5):  # Starting from the second row
+    for row in sheet.iter_rows(min_row=2, min_col=2, max_col=5):  # Starting from the second row not including the volume row (6)
         for cell in row:
             if isinstance(cell.value, (int, float)):  # Check if the cell contains a numeric value
                 cell.number_format = '"$"#,##0.00'  # Apply dollar format directly
