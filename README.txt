@@ -1,4 +1,4 @@
-FINTRACK 1.3.1 - yfinance excel workbook constructor
+FINTRACK 1.3.2 - yfinance excel workbook constructor
 
 ***TO USE***
 
